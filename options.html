@@ -1,0 +1,417 @@
+<html>
+	<head>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script>
+		/* form setup on load 
+		if user has no saved lists, quiz_content_saved, and quiz_content_saved_list should be disabled. quiz_content_custom should be selected
+		make all the label text unselectable.
+		*/
+
+		/* during fill out
+		if quiz_type_time_attack is selected, question_overall_o should be disabled and question_overall_q should be selected
+		if quiz_content_custom_random is selected, enable_leaderboards is unchecked and disabled
+		*/
+
+		/* form validation on submit
+		'name' is a required field
+		if quiz_type = quiz_type_fixed, question_count is required and must be an integer value
+		if question_categories_custom is selected, at least one checkbox with the name question_categories_XXX must be chosen
+		if question_type_group_custom is selected, at least one checkbox with the name question_types_XXX must be chosen
+		if quiz_type = quiz_type_time_attacked,  time_attack limit must not be empty, and must be an integer
+		if time_limit_enabled is selected, and time_limit_type_user is selected, user_time_limit must not be empty, and must be an integer
+		if graded is checked, graded_pass_min must be set, be an integer, and be between 1 and 100.
+		make sure quiz name is unique to account
+		*/
+		</script>
+		<style>
+		ul li {
+			list-style-type: none;
+		}
+
+		ul+ul {
+			padding-top: 20px;
+		}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>Advanced Quiz Options</h1>
+		</header>
+
+		<section>
+			<p>Complete options for quiz creation are below.</p>
+
+			<form method='post' action='' name='quiz_settings' id='quiz_settings'>
+				<label for='name'>Quiz Name</label>
+				<input type='text' name='name' id='name' /><br/>
+
+				<label for='description'>Description</label>
+				<textarea name='description' id='description'></textarea>
+
+				<fieldset>
+					<legend>Quiz Mode</legend>
+					<p>There are several distinct quiz modes to select from.  Choose one of the options below.</p>
+					<!-- select all the quiz types from the db.  name, id, description -->
+					<ul>
+						<li>
+							<input type='radio' name='quiz_type' id='quiz_type_fixed' checked='checked' />
+							<label for='quiz_type_fixed'>Fixed Count - Quiz will consist of</label>
+							<input type='text' name='question_count' value='' />
+							<label for='question_count'>questions.</label>	
+						</li>
+						<li>
+							<input type='radio' name='quiz_type' id='quiz_type_time_attack' />
+							<label for='quiz_type_time_attack'>Time Attack - User will be given</label>
+							<input type='text' name='time_attack_limit' id='time_attach_limit' />
+							<label for='time_attack_limit'>seconds to answer as many questions as possible.</label>
+						</li>
+						<li>
+							<input type='radio' name='quiz_type' id='quiz_type_endless' />
+							<label for='quiz_type_endless'>Endless - Keeps going until user chooses to stop, or there are no questions left!</label>
+						</li>
+						<li>
+							<input type='radio' name='quiz_type' id='quiz_type_flashcard' />
+							<label for='quiz_type_flashcard'>Flashcards - Shows the question and correct answer immediately.</label>
+						</li>
+					</ul>
+				</fieldset>
+
+				<fieldset>
+					<legend>Question Selection</legend>
+
+					<p>There are several ways to determine the questions included on a quiz.  Choose to have the system randomly pick questions based on the selected categories and format options, or, use questions from a saved list.</p>
+
+					<p>When using questions from a saved list, note that this quiz will not automatically update if the list changes in the future.</p>
+
+					<ul>
+						<li>
+							<input type='radio' name='quiz_content' id='quiz_content_saved' checked='checked' />
+							<label for='quiz_content_saved'>Use questions from a saved list</label><br/>
+							<label for='quiz_content_saved_list'>Which list should the questions come from?</label>
+							<select name='quiz_content_saved_list' id='quiz_content_saved_list'>
+								<option value='list_1'>Toughest Questions!</option>
+								<option value='list_2'>Easy peasy</option>
+							</select>
+						</li>
+							<input type='radio' name='quiz_content' id='quiz_content_custom' />
+							<label for='quiz_content_custom'>Select custom categories and formats</label>
+
+							<p>When using custom question category and format settings, the system can either pick the questions randomly when this quiz is saved, or have the questions randomly chosen each time the quiz is run.</p>
+							<ul>
+								<li>
+									<input type='radio' name='quiz_content_custom_generate' id='quiz_content_custom_onsave' checked='checked' />
+									<label for='quiz_content_custom_onsave'>Choose on Save</label>
+								</li>
+								<li>
+									<input type='radio' name='quiz_content_custom_generate' id='quiz_content_custom_random' />
+									<label for='quiz_content_custom_random'>Choose randomly each time quiz is run - NOTE: This disables leaderboards</label>
+								</li>
+							</ul>
+
+							<p>Should questions created by other accounts be included?</p>
+							<ul>
+								<li>
+									<input type='radio' name='question_cteator' value='any' id='question_creator_any' checked='checked' />
+									<label for='question_creator_any'>Use any questions</label>
+								</li>
+								<li>
+									<input type='radio' name='question_cteator' value='onlyme' id='question_creator_onlyme' />
+									<label for='question_creator_onlyme'>Only questions from this account</label>
+								</li>
+								<li>
+									<input type='radio' name='question_cteator' value='others' id='question_creator_others' />
+									<label for='question_creator_others'>Use only questions others have created</label>
+								</li>
+							</ul>	
+						</li>
+					</ul>
+				</fieldset>
+
+				<fieldset>
+					<legend>Question Categories</legend>
+					<p>Choose to include questions of all categories, or restrict to certain categories.</p>
+					<ul>
+						<li>
+							<input type='radio' name='question_categories' id='question_categories_all' value='categories_all' checked='checked' />
+							<label for='question_categories_all'>All Categories</label>
+						</li>
+						<li>
+							<input type='radio' name='question_categories' id='question_categories_custom' value='categories_custom' />
+							<label for='question_categories_custom'>Custom</label>
+
+							<ul>
+								<li>
+									<input type='checkbox' name='question_categories_1' id='question_categories_1' />
+									<label for='question_categories_1'>JQuery</label>
+								</li>
+								<li>
+									<input type='checkbox' name='question_categories_2' id='question_categories_2' />
+									<label for='question_categories_2'>CSS</label>
+								</li>
+								<li>
+									<input type='checkbox' name='question_categories_3' id='question_categories_3' />
+									<label for='question_categories_3'>Acronyms</label>
+								</li>
+								<li>
+									<input type='checkbox' name='question_categories_4' id='question_categories_4' />
+									<label for='question_categories_4'>Ruby on Rails</label>
+								</li>
+								<li>
+									<input type='checkbox' name='question_categories_5' id='question_categories_5' />
+									<label for='question_categories_5'>Spelling</label>
+								</li>
+							</ul>
+
+							<p>Questions may be listed in more than one category.  In the case that a question matches one of the selected categories, but is also in a category not chosen, should it still be included?</p>
+							<p>By default, questions having a category not selected will be excluded.</p>
+							<input type='checkbox' name='question_categories_overlap' id='question_categories_overlap' />
+							<label for='question_categories_overlap'>Include questions with at least one category match.</label>
+						</li>
+					</ul>
+				</fieldset>
+
+				<fieldset>
+					<legend>Question Formats</legend>
+					<p>Questions come in a variety of formats.  Choose which format(s) to include on this quiz below.</p>
+					<ul>
+						<li>
+							<input type='radio' name='question_type_group' id='question_type_group_all' value='all' checked='checked'>
+							<label for='question_type_group_all'>All Formats</label>
+						</li>
+						<li>
+							<input type='radio' name='question_type_group' id='question_type_group_custom' value='custom'>
+							<label for='question_type_group_custom'>Custom</label>
+
+							<!-- select all question types from db.  we want name, id, description.  list them out as checkbox options here -->
+							<ul>
+								<li>
+									<input type='checkbox' name='question_types_1' id='question_types_1' value='1'>
+									<label for='question_types_1'>Multiple Choice</label>
+								</li>
+								<li>
+									<input type='checkbox' name='question_types_2' id='question_types_2' value='2'>
+									<label for='question_types_2'>True or False</label>
+								</li>
+								<li>
+									<input type='checkbox' name='question_types_3' id='question_types_3' value='3'>
+									<label for='question_types_3'>Fill in the Blank</label>
+								</li>
+								<li>
+									<input type='checkbox' name='question_types_4' id='question_types_4' value='4'>
+									<label for='question_types_4'>Column Match</label>
+								</li>
+							</ul>
+						</li>
+					</ul>	
+				</fieldset>
+		
+				<fieldset>
+					<legend>Time Limits</legend>
+					<p>Though not required, it may add to the difficulty by enforcing time limits on either individual questions, or the overall quiz.  Set these options below.</p>
+					<ul>
+						<li>
+							<input type='radio' name='time_limit' id='time_limit_none' value='none' checked='checked'>
+							<label for='time_limit_none'>No Time Limits</label>
+						</li>
+						<li>
+							<input type='radio' name='time_limit' id='time_limit_enabled' value='enabled'>
+							<label for='time_limit_enabled'>Enable Time Limits</label>
+
+							<p>A time limit can be set on the individual questions, or the overall quiz.</p>
+							<ul>
+								<li>
+									<input type='radio' name='question_overall' id='question_overall_q' value='question' checked='checked'>
+									<label for='question_overall_q'>Apply limit to individual questions</label>
+								</li>
+								<li>
+									<input type='radio' name='question_overall' id='question_overall_o' value='question'>
+									<label for='question_overall_o'>Limit overall quiz time</label>
+								</li>
+							</ul>
+
+							<p>Choose to set a custom time limit, or have the system choose one based on presets, a users past results, or even results of other users!</p>
+							<p>If choosing to limit the time of the overall quiz and a time isn't set, times of the individual questions on the test will be combined to come up with the setting.</p>
+							<p>Site Best and Site Worst settings may include a users own times, if they are the best or the worst.</p>
+							<p>If there is no data for a question to match a personal or site best/worst, the questions preset time limit will be used as a fallback.</p>
+							<ul>
+								<li>
+									<input type='radio' name='time_limit_type' id='time_limit_type_preset' value='preset' checked='checked'>
+									<label for='time_limit_type_preset'>Preset - Uses limits set by question creators</label>
+								</li>
+								<li>
+									<input type='radio' name='time_limit_type' id='time_limit_type_pb' value='pb'>
+									<label for='time_limit_type_pb'>Personal Best - For questions a user has answered before, their quickest time will be the limit.</label>
+								</li>
+								<li>
+									<input type='radio' name='time_limit_type' id='time_limit_type_pw' value='pw'>
+									<label for='time_limit_type_pw'>Personal Worst - For questions a user has answered before, their slowest time will be the limit.</label>
+								</li>
+								<li>
+									<input type='radio' name='time_limit_type' id='time_limit_type_sb' value='sb'>
+									<label for='time_limit_type_sb'>Site Best - The fastest time recorded for any user will be the limit.</label>
+								</li>
+								<li>
+									<input type='radio' name='time_limit_type' id='time_limit_type_sw' value='sw'>
+									<label for='time_limit_type_sw'>Site Worst - Use the slowest time recorded for any user as the limit.</label>
+								</li>
+								<li>
+									<input type='radio' name='time_limit_type' id='time_limit_type_user' value='fixed' />
+									<label for='time_limit_type_user'>User Specified Time</label>
+									<input type='text' name='user_time_limit' value='' /> 
+									<label for='user_time_limit'>seconds</label>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</fieldset>
+
+				<fieldset>
+					<legend>Correct Answers</legend>
+					<p>Should the user be shown correct answers to the questions? Probably!  Set these options here.</p>
+
+					<ul>
+						<li>
+							<input type='radio' name='answers' id='answers_off' value='off' checked='checked' />
+							<label for='answers_off'>Never show the correct answers</label>
+						</li>
+						<li>
+							<input type='radio' name='answers' id='answers_on' value='off' checked='checked' />
+							<label for='answers_on'>Show correct answers</label>
+
+							<p>What questions should the correct answers be shown for?</p>
+
+							<ul>
+								<li>
+									<input type='radio' name='correct_answers' value='always' id='show_correct_answers_always' checked='checked'/>
+									<label for='show_correct_answers_always'>Show correct answers for every question</label>
+								</li>
+								<li>
+									<input type='radio' name='correct_answers' value='wrong' id='show_correct_answers_wrong' />
+									<label for='show_correct_answers_wrong'>Only show correct answers when user gets question wrong</label>
+								</li>
+							</ul>
+
+							<p>When should the correct answers be shown?</p>
+							<ul>
+								<li>
+									<input type='checkbox' name='correct_answers_after_question' id='correct_answers_after_question' />
+									<label for='correct_answers_after_question'>After each question</label>
+								</li>
+								<li>
+									<input type='checkbox' name='correct_answers_after_quiz' id='correct_answers_after_quiz' />
+									<label for='correct_answers_after_quiz'>At the end of this quiz</label>
+								</li>
+							</ul>
+
+							<p>Some questions may provide detailed explanations with the answer.  Should these be shown?</p>
+							<ul>
+								<li>
+									<input type='radio' name='explanations' id='explanations_off' value='explanations_off' checked='checked'>
+									<label for='explanations_off'>Never show detailed explanations</label>
+								</li>
+								<li>
+									<input type='radio' name='explanations' id='explanations_on' value='explanations_on'>
+									<label for='explanations_on'>Show explanations when they are available</label>
+
+									<p>When should explanations be shown?</p>
+									<ul>
+										<li>
+											<input type='checkbox' name='correct_explanations_after_question' id='correct_explanations_after_question' />
+											<label for='correct_explanations_after_question'>After each question</label>
+										</li>
+										<li>
+											<input type='checkbox' name='correct_explanations_after_quiz' id='correct_explanations_after_quiz' />
+											<label for='correct_explanations_after_quiz'>At the end of this quiz</label>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</fieldset>
+				
+				<fieldset>
+					<legend>Question Skipping</legend>
+
+					<p>If a user gets stumped on a question, rather than submitting a random guess and potentially getting it wrong.. an option to skip the question can be enabled.</p>
+
+					<p>Skipped questions can either be reshown at the end of this quiz, or not.  Choosing not to reshow skipped questions causes the quiz scoring to be adjusted as if the question was never on the test.  When this option is used, results become ineligible for the leaderboard if enabled.</p>
+
+					<ul>
+						<li>
+							<input type='radio' name='question_skipping' id='question_skipping_disabled' value='disabled' checked='checked'>
+							<label for='question_skipping_disabled'>Disable Skipping</label>
+						</li>
+						<li>
+							<input type='radio' name='question_skipping' id='question_skipping_trueskip' value='trueskip'>
+							<label for='question_skipping_trueskip'>Skipped Questions Bypassed Completely</label>
+						</li>
+						<li>
+							<input type='radio' name='question_skipping' id='question_skipping_reshow' value='reshow'>
+							<label for='question_skipping_reshow'>Skipped Questions Reshown at end of Quiz</label>
+						</li>
+					</ul>
+				</fieldset>
+				
+				<fieldset>
+					<legend>Test Taker Frequency</legend>
+					<p>Optionally choose to restrict the frequency users take this quiz.  This might be desired to prevent people from taking a quiz over and over to try and improve their score while the questions are still fresh in their minds.</p>
+					<ul>
+						<li>
+							<input type='radio' value='disabled' name='test_taker_frequency' id='test_taker_frequency_disabled' checked='checked' />
+							<label for='test_taker_frequency_disabled'>No restrictions.  Users can take this quiz as often as they like.</label>
+						</li>
+						<li>
+							<input type='radio' value='disabled' name='test_taker_frequency' id='test_taker_frequency_oad' />
+							<label for='test_taker_frequency_oad'>Once a day.</label>
+						</li>
+						<li>
+							<input type='radio' value='once' name='test_taker_frequency' id='test_taker_frequency_once' />
+							<label for='test_taker_frequency_once'>Once.  Each registered account can only take this quiz a single time.</label>	
+						</li>
+					</ul>
+				</fieldset>
+
+				<fieldset>
+					<legend>Visibility Settings</legend>
+					<p>Share this quiz with other users?  Making a quiz public allows other users on the site to see and take it, but not change the settings at all.</p>
+					<p>By default, quizzes are private and can only be seen and taken by the account that created them.</p>
+
+					<ul>
+						<li>
+							<input type='radio' name='public_quiz' value='private' id='public_quiz_private' checked='checked'/>
+							<label for='public_quiz_private'>Private - Only accessible to this account</label>
+						</li>
+						<li>
+							<input type='radio' name='public_quiz' value='invite' id='public_quiz_invite' />
+							<label for='public_quiz_invite'>Invite Only - Only users explicitly granted access can take this quiz</label>
+							<label for='public_quiz_public'>Make this quiz public</label>
+						</li>
+					</ul>
+				</fieldset>
+
+				<fieldset>
+					<legend>Quiz Results</legend>
+					<p>Enable grading?  When enabled, a score of X percent or above correct answers will be considered a pass.</p>
+					<input type='checkbox' name='graded' id='graded' />
+					<label for='graded'>Enable grading with a </label>
+					<input type='text' name='graded_pass_min' id='graded_pass_min' />
+					<label for='graded_pass_min'>% minimum correct score to PASS</label>
+
+					<p>Enable leaderboards?  If enabled, a leaderboard is shown to a user after they complete this quiz.  The leaderboard lets a user see how they stack up against other users who have taken this quiz.</p>
+					<input type='checkbox' name='enable_leaderboards' id='enable_leaderboards' />
+					<label for='enable_leaderboards'>Enable Leaderboards</label>
+
+					<p>A final option is to have quiz results sent by email.  Immediately after a quiz is completed, a score and detailed breakdown will be sent to the email address associated with this account.</p>
+		
+					<input type='checkbox' name='email_results' id='email_results' />
+					<label for='email_results'>Email Results</label>
+				</fieldset>
+
+				<input type='submit' name='save_quiz' value='Save Quiz' />
+			</form>
+		</section>
+		<footer>
+		</footer>
+	</body>
+</html>
