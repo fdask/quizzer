@@ -1,5 +1,7 @@
 <?php 
 if (isset($_GET['did'])) {
+	require 'quiz.inc.php';
+
 	$question_id = intval($_GET['did']);
 	
 	if (deleteQuestion($question_id)) {
