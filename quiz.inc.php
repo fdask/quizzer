@@ -219,6 +219,12 @@ function saveAnswers($question_id, $question_type) {
 				$ret++;
 			}
 		}
+	} else if ($question_type == "cm") {
+		foreach ($_POST['answer_cm'] as $row) {
+			if (saveAnswer($question_id, $row[0], $row[1], 1)) {
+				$ret++;
+			}
+		}
 	}
 
 	return $ret;

@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
 
 				<?php
 				if (isset($q) && !empty($q)) {
-					foreach (array('mc', 'tf', 'fb') as $type) {
+					foreach (array('mc', 'tf', 'fb', 'cm') as $type) {
 						$qts[$type] = ($q['question_type'] == $type) ? "checked='checked'" : "";	
 					}
 				}
@@ -69,6 +69,10 @@ if (isset($_POST['submit'])) {
 					<li>
 						<input type='radio' name='question_type' id='question_type_fb' value='fb' <?php if (!empty($q)) { echo $qts['fb']; } ?> />
 						<label for='question_type_fb'>Fill in the Blanks</label>
+					</li>
+					<li>
+						<input type='radio' name='question_type' id='question_type_cm' value='cm' <?php if (!empty($q)) { echo $qts['cm']; } ?> />
+						<label for='question_type_cm'>Column Match</label>
 					</li>
 				</ul>
 	
@@ -108,14 +112,14 @@ if (isset($_POST['submit'])) {
 					<br/>
 
 					<label for='answer_tf_ex'>Explanation</label>
-					<textarea name='answer_tf_ex' id='answer_tf_ex'><?php if (!empty($q)) echo $q['explanation'] ?></textarea>
+					<textarea name='answer_tf_ex' id='answer_tf_ex'><?php if (!empty($q) && isset($q['explanation'])) echo $q['explanation'] ?></textarea>
 				</span>
 
 				<span id='answer_mc' <?php if (isset($q) && $q['question_type'] != "mc") { echo "style='display: none;"; } ?>>
 					<button type='button' name='add_answer' id='add_answer'>Add Answer</button><br/>
 
 					<?php
-					if (!empty($q)) {
+					if (!empty($q) && $q['question_type'] == "mc") {
 						foreach ($q['answers'] as $answer) {
 							?>
 					<fieldset class='answer_mc'>
@@ -165,6 +169,31 @@ if (isset($_POST['submit'])) {
 					?>
 				</span>
 				<br />
+
+				<span id='answer_cm' <?php if ((!empty($q) && $q['question_type'] != 'cm') || empty($q)) { echo "style='display: none;'"; } ?>>
+					<button type='button' name='add_answer_cm'>Add Row</button><br/>
+					<?php 
+					if (!empty($q) && count($q['answers'])) {
+						for ($x = 0; $x < count($q['answers']); $x++) {
+							?>
+							<span class='answer_cm'>
+							<input type='text' name='answer_cm[<?php echo $x; ?>][]' value='<?php echo $q['answers'][$x]['answer']; ?>'> 
+							<input type='text' name='answer_cm[<?php echo $x;; ?>][]' value='<?php echo $q['answers'][$x]['explanation']; ?>' />
+							<button type='button' name='delete[]'>X</button>
+							</span>
+							<br/>
+							<?php
+						}
+					} else {
+						?>
+						<span class='answer_cm'>
+						<input type='text' name='answer_cm[0][]' value=''> <input type='text' name='answer_cm[0][]' value='' /><button type='button' name='delete[]'>X</button></span><br/>
+						<span class='answer_cm'><input type='text' name='answer_cm[1][]' value=''> <input type='text' name='answer_cm[1][]' value='' /><button type='button'>X</button></span><br/>
+						<?php
+					}
+					?>
+				</span>
+				<br/>
 
 				<label for='question_timelimit'>Time Limit (seconds)</label>
 				<input type='text' name='question_timelimit' id='question_timelimit' <?php if (isset($q)) echo "value='" . $q['time_limit'] . "'"; ?> /><br/>

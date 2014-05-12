@@ -39,23 +39,30 @@ $(document).ready(function () {
 
 	// show/hide the relevant answer blocks depending on what question type is selected
 	$("#question_type_tf").click(function () {
-		if ($(this).is(':checked')) {
-			$("#answer_mc, #answer_fb").hide();
+		if ($(this).prop('checked')) {
+			$("#answer_mc, #answer_fb, #answer_cm").hide();
 			$("#answer_tf").show();
 		}
 	});
 
 	$("#question_type_mc").click(function () {
-		if ($(this).is(':checked')) {
-			$("#answer_fb, #answer_tf").hide();
+		if ($(this).prop('checked')) {
+			$("#answer_fb, #answer_tf, #answer_cm").hide();
 			$("#answer_mc").show();
 		}
 	});
 
 	$("#question_type_fb").click(function () {
-		if ($(this).is(':checked')) {
-			$("#answer_mc, #answer_tf").hide();
+		if ($(this).prop('checked')) {
+			$("#answer_mc, #answer_tf, #answer_cm").hide();
 			$("#answer_fb").show();
+		}
+	});
+
+	$("#question_type_cm").click(function () {
+		if ($(this).prop('checked')) {
+			$("#answer_mc, #answer_tf, #answer_fb").hide();
+			$("#answer_cm").show();
 		}
 	});
 
@@ -63,14 +70,35 @@ $(document).ready(function () {
 		var name = $(this).attr("name");
 
 		if (name == "delete[]") {
-			console.log($(".answer_mc").length);
-
+			console.log("deleting!");
 			if ($(".answer_mc").length > 1) {
+				$(this).parent().remove();
+			} else if ($(".answer_cm").length > 1) {
+				// column match entries
 				$(this).parent().remove();
 			}
 		} else if (name == "add_answer") {
 			$("#answer_mc").append("<fieldset class='answer_mc'><label for='answer'>Answer</label><input type='text' name='answer[]' /><br/><label for='answer_correct'>Correct Answer?</label><input type='checkbox' name='answer_correct[]' /> Correct<br/><label for='answer_explanation'>Explanation</label><input type='text' name='answer_explanation[]' /><br/><button type='button' name='delete[]'>X</button></fieldset>");
-		} 
+		}  else if (name == "add_answer_cm") {
+			// figure out the highest count
+			var regex = /\[(\d+)\]\[\]/g;
+			var cur = 0;
+
+			$(".answer_cm input[name^='answer_cm['").each(function (i, el) {
+				var name = el.name;
+				var matches = regex.exec(name);
+
+				if (matches) {
+					if (parseInt(matches[1]) > cur) {
+						cur = parseInt(matches[1]);
+					}
+				}
+			});
+
+			cur++;
+
+			$("#answer_cm").append("<span class='answer_cm'><input type='text' name='answer_cm[" + cur + "][]' value=''><input type='text' name='answer_cm[" + cur + "][]' value='' /><button type='button' name='delete[]'>X</button></span><br/>");
+		}
 	}).on('keyup', '#question', function () {
 		if ($("#question_type_fb").prop('checked')) {
 			setFBFields();
