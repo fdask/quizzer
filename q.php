@@ -12,9 +12,9 @@ if (isset($_GET['qid'])) {
 
 	if (empty($diff)) {
 		// correct
-		echo "correct";
+		echo "<div id='answer'>correct</div>";
 	} else {
-		echo "incorrect";
+		echo "<div id='answer'>incorrect</div>";
 	}
 
 	exit;
@@ -63,10 +63,10 @@ switch ($q['question_type']) {
 
 		foreach ($q['answers'] as $answer) {
 			if ($cc > 1) { ?>
-			<input type='checkbox' name='mc_answer[]' id='mc_answer_<?php echo $answer['id']; ?>' value='<?php echo $answer['answer']; ?>' />
+			<input type='checkbox' name='mc_answer[]' id='mc_answer_<?php echo $answer['id']; ?>' value='<?php echo htmlentities($answer['answer']); ?>' />
 			<label for='mc_answer_<?php echo $answer['id']; ?>'><?php echo $answer['answer']; ?></label><br/>
 			<?php } else { ?>
-			<input type='radio' name='mc_answer[]' id='mc_answer_<?php echo $answer['id']; ?>' value='<?php echo $answer['answer'] . "'"; if ($first) echo "checked='checked'"; ?>>
+			<input type='radio' name='mc_answer[]' id='mc_answer_<?php echo $answer['id']; ?>' value='<?php echo htmlentities($answer['answer']) . "'"; if ($first) echo "checked='checked'"; ?>>
 			<label for='mc_answer_<?php echo $answer['id']; ?>'><?php echo $answer['answer']; ?></label><br/>
 			<?php 
 			}
@@ -113,7 +113,8 @@ function sendAnswer(correct) {
 	$.ajax({
 		url: "?qid=" + question_id + "&c=" + encodeURIComponent(correct)
 	}).done(function (data) {
-		if (data == "correct") {
+		alert($("#answer", $(data)).html());
+		if ($("#answer", $(data)).html() == "correct") {
 			$("body").css('background-color', 'green');
 		} else {
 			$("body").css('background-color', 'red');

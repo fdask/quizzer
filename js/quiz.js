@@ -73,24 +73,30 @@ $(document).ready(function () {
 		} 
 	}).on('keyup', '#question', function () {
 		if ($("#question_type_fb").prop('checked')) {
-			var q = $(this).val();
-
-			var c = q.match(/___/g);
-
-			var add = "";
-
-			if (c && c.length) {
-				var html = "<input type='text' name='answer_fb[]' />";
-
-				for (var x = 0; x < c.length; x++) {
-					// make sure, check to see if a corresponding answer input already exists
-					add += html;
-				}
-			}
-
-			$("#answer_fb").html(add);
+			setFBFields();
 		}
+	}).on('change', '#question_type_fb', function () {
+		setFBFields();
 	});
+
+	function setFBFields() {
+		var q = $("#question").val();
+
+		var c = q.match(/___/g);
+
+		var add = "";
+
+		if (c && c.length) {
+			var html = "<input type='text' name='answer_fb[]' />";
+
+			for (var x = 0; x < c.length; x++) {
+				// make sure, check to see if a corresponding answer input already exists
+				add += html;
+			}
+		}
+
+		$("#answer_fb").html(add);
+	}
 
 	$("#quiz").validate({
 		rules: {

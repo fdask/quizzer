@@ -197,7 +197,7 @@ function saveAnswers($question_id, $question_type) {
 		}
 	} else if ($question_type == "tf") {
 		if ($_POST['answer_tf'] == "true") {
-			if (saveAnswer($question_id, 'True', '', 1)) {
+			if (saveAnswer($question_id, 'True', $_POST['answer_tf_ex'], 1)) {
 				$ret++;
 			}
 
@@ -209,7 +209,7 @@ function saveAnswers($question_id, $question_type) {
 				$ret++;
 			}
 
-			if (saveAnswer($question_id, 'False', '', 1)) {
+			if (saveAnswer($question_id, 'False', $_POST['answer_tf_ex'], 1)) {
 				$ret++;
 			}
 		}

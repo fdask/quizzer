@@ -47,7 +47,7 @@ if (isset($_POST['submit'])) {
 		<section>
 			<form name='quiz' id='quiz' method='POST' action='<?php echo $_SERVER['SCRIPT_NAME']; ?>'>
 				<label for='question'>Question</label>
-				<textarea name='question' id='question' /><?php if (isset($q['question'])) { echo $q['question']; } ?></textarea><br/>
+				<textarea name='question' id='question' rows='3' cols='80' /><?php if (isset($q['question'])) { echo $q['question']; } ?></textarea><br/>
 
 				<?php
 				if (isset($q) && !empty($q)) {
@@ -100,9 +100,15 @@ if (isset($_POST['submit'])) {
 					}
 					?>
 					<label for='answer_true'>True</label>
-					<input type='radio' name='answer_tf' id='answer_true' value='true' <?php if ($correct == "True" || !isset($q)) { echo "checked='checked'"; } ?> /><br/>
+					<input type='radio' name='answer_tf' id='answer_true' value='true' <?php if ($correct == "True" || !isset($q)) { echo "checked='checked'"; } ?> />
+					<br/>
+			
 					<label for='answer_false'>False</label>
-					<input type='radio' name='answer_tf' id='answer_false' value='false' <?php if ($correct == "False") { echo "checked='checked'"; } ?>/><br/>
+					<input type='radio' name='answer_tf' id='answer_false' value='false' <?php if ($correct == "False") { echo "checked='checked'"; } ?>/>
+					<br/>
+
+					<label for='answer_tf_ex'>Explanation</label>
+					<textarea name='answer_tf_ex' id='answer_tf_ex'><?php if (!empty($q)) echo $q['explanation'] ?></textarea>
 				</span>
 
 				<span id='answer_mc' <?php if (isset($q) && $q['question_type'] != "mc") { echo "style='display: none;"; } ?>>
