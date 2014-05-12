@@ -1,30 +1,4 @@
-/**
-DURING FILL OUT	
-- when question_type_tf is checked, hide #answer_normal and show #answer_true_false
-- when question_type_mc or question_type_fb are selected, hide #answer_true_false, show #answer_normal
-- #add_answer.click, add a new answer group of fields
-- class delete_answer clicked, remove the corresponding answer field
-
-ON SUBMIT
-- if question_type is NOT tf, then require at least one answer with #answer_correct checked
-- if question_type == fb, the #question value must contain at least one <__> to represent the blanks
-- question must not be blank
-*/
 $(document).ready(function () {
-	/*
-	// check the setting of the question_type box.  it might be set when we load an existing question, so be sure to show/hide at this point
-	if ($("#question_type_tf").prop('checked')) {
-		$("#answer_mc, #answer_fb").hide();
-		$("#answer_tf").show();
-	} else if ($("#question_type_mc").prop('checked')) {
-		$("#answer_fb, #answer_tf").hide();
-		$("#answer_mc").show();
-	} else if ($("#question_type_fb").prop('checked')) {
-		$("#answer_fb, #answer_tf").hide();
-		$("#answer_mc").show();
-	}
-	*/
-
 	// We call taggingJS init on all "#tag" divs
 	$("#question_cats").tagging({
 		"no-spacebar": true,
@@ -76,6 +50,21 @@ $(document).ready(function () {
 			} else if ($(".answer_cm").length > 1) {
 				// column match entries
 				$(this).parent().remove();
+			} else if ($(this).data('qid')) {
+				var question_id = $(this).data('qid');
+				console.log(question_id);
+
+				var th = $(this);
+
+				$.ajax({
+					url: "?did=" + question_id
+				}).done(function (data) {
+					if (data == "success") {
+						th.parent().parent().remove();
+					} else {
+						console.log("failure");	
+					}
+				});
 			}
 		} else if (name == "add_answer") {
 			$("#answer_mc").append("<fieldset class='answer_mc'><label for='answer'>Answer</label><input type='text' name='answer[]' /><br/><label for='answer_correct'>Correct Answer?</label><input type='checkbox' name='answer_correct[]' /> Correct<br/><label for='answer_explanation'>Explanation</label><input type='text' name='answer_explanation[]' /><br/><button type='button' name='delete[]'>X</button></fieldset>");

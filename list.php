@@ -1,4 +1,19 @@
-<?php include 'header.inc.php'; ?>
+<?php 
+if (isset($_GET['did'])) {
+	$question_id = intval($_GET['did']);
+	
+	if (deleteQuestion($question_id)) {
+		echo "success";
+	} else {
+		echo "fail";
+	}
+
+	exit;
+}
+
+include 'header.inc.php'; 
+
+?>
 <script>
 $("button").click(function () {
 	alert("testing");
@@ -27,7 +42,7 @@ if (!empty($questions)) {
 			<td><?php echo $q['id']; ?></td>
 			<td><a href='questions.php?qid=<?php echo $q['id']; ?>'><?php echo $q['question']; ?></a></td>
 			<td><?php echo $q['question_type']; ?></td>
-			<td><button type='button' name='delete[]'>X</button></td>
+			<td><button type='button' name='delete[]' data-qid='<?php echo $q['id']; ?>'>X</button></td>
 		</tr>
 		<?php
 	}

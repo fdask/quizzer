@@ -148,6 +148,16 @@ function updateQuestion($question_id, $question, $type, $limit) {
 	return mysql_query($query);
 }
 
+function deleteQuestion($question_id) {
+	if (removeCategories($question_id) && removeAnswers($question_id)) {
+		$query = "DELETE FROM questions WHERE id = $question_id";
+
+		return mysql_query($query);
+	}
+
+	return false;
+}
+
 function getAnswers($question_id, $correct = false) {
 	$ret = array();
 
