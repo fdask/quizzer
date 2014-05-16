@@ -1,27 +1,8 @@
 <?php
 require 'header.inc.php';
 
-if (isset($_GET['qid'])) {
-	$answer = urldecode($_GET['c']);
-
-	$answers = explode("||", $answer);
-
-	$a = getAnswers($_GET['qid'], true);
-
-	$diff = array_diff($a, $answers);	
-
-	if (empty($diff)) {
-		// correct
-		echo "<div id='answer'>correct</div>";
-	} else {
-		echo "<div id='answer'>incorrect</div>";
-	}
-
-	exit;
-}
-
 // get a random question
-$q = getQuestion();
+$q = getQuestion(isset($_GET['qid']) ? $_GET['qid'] : false);
 
 echo "<p>";
 
@@ -79,6 +60,32 @@ switch ($q['question_type']) {
 		break;
 	case 'cm':
 		// column match
+		$left = array();
+		$right = array();
+
+		foreach ($q['answers'] as $answer) {
+			$left[] = "<li data-txt='{$answer['answer']}'>{$answer['answer']}</li>";
+			$right[] = "<li data-txt='{$answer['explanation']}'>{$answer['explanation']}</li>";
+		}
+
+		shuffle($left);
+		shuffle($right);
+
+		echo "<ul id='column-left'>";
+
+		for ($x = 0; $x < count($left); $x++) {
+			echo $left[$x];
+		}
+
+		echo "</ul>";
+		echo "<ul id='column-right'>";
+
+		for ($x = 0; $x < count($right); $x++) {
+			echo $right[$x];
+		}
+
+		echo "</ul>";
+
 		break;
 	default:
 }
@@ -113,6 +120,13 @@ function getAnswers() {
 				answers.push($(this).val());
 			}
 		});
+	} else if ($("#column-left")) {
+		var left = $("#column-left").sortable('toArray', {attribute: 'data-txt'});
+		var right = $("#column-right").sortable('toArray', {attribute: 'data-txt'});
+
+		for (var x = 0; x < left.length; x++) {
+			answers.push([left[x], right[x]]);
+		}
 	} else {
 		$("input[name^=fb_answer]").each(function (i, el) {
 			answers.push($(this).val());

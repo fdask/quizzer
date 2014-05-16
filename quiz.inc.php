@@ -347,5 +347,21 @@ function isAnswerCorrect($question_id, $answer) {
 	return false;
 }
 
+function doColumnsMatch($question_id, $answer, $explanation) {
+	$query = "
+	SELECT
+		id
+	FROM
+		answers
+	WHERE
+		question_id = $question_id AND
+		answer = '" . mysql_real_escape_string($answer) . "' AND
+		explanation = '" . mysql_real_escape_string($explanation) . "'";
+
+	$res = mysql_query($query);
+
+	return mysql_num_rows($res);
+}
+
 mysql_connect("localhost", "quiz", "quiz");
 mysql_select_db("quiz");

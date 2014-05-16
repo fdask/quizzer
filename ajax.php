@@ -7,8 +7,15 @@ if (isset($data['qid']) && !empty($data['answers'])) {
 	$all_good = true;
 
 	foreach ($data['answers'] as $answer) {
-		if (!isAnswerCorrect($data['qid'], $answer)) {
-			$all_good = false;
+		if (is_array($answer)) {
+			// array answer elements are for the column match
+			if (!doColumnsMatch($data['qid'], $answer[0], $answer[1])) {
+				$all_good = false;
+			}	
+		} else {
+			if (!isAnswerCorrect($data['qid'], $answer)) {
+				$all_good = false;
+			}
 		}
 	}
 

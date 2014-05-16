@@ -1,4 +1,7 @@
 $(document).ready(function () {
+	$("#column-left").sortable();
+	$("#column-right").sortable();
+
 	// We call taggingJS init on all "#tag" divs
 	$("#question_cats").tagging({
 		"no-spacebar": true,

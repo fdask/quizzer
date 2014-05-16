@@ -5,8 +5,10 @@
       <script src="js/jquery.min.js"></script>
       <script src="js/jquery.validate.min.js"></script>
       <script src="js/tagging.min.js"></script>
+      <script src="js/jquery-ui.min.js"></script>
       <script src="js/quiz.js"></script>
       <link href="css/tag-basic-style.css" rel="stylesheet">
+		<link href="quiz.css" rel="stylesheet">
       <style>
       ul {
          list-style: none;

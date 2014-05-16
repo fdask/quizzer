@@ -1,0 +1,24 @@
+body {
+	padding-top: 40px;
+}
+
+header {
+	position: fixed;
+	top: 0;
+	background-color: white;
+}
+
+ul#column-left,
+ul#column-right {
+	width: 500px;
+	float: left;
+	margin: 0 1em;
+}
+
+ul#column-left li, 
+ul#column-right li {
+	width: 500px;
+	height: 2em;
+	border: 1px solid black;
+	font-size: 2em;
+}

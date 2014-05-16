@@ -51,10 +51,6 @@ if (!empty($questions)) {
 
 	echo "</table>";
 }
-
-echo "<pre>";
-print_r($questions);
-echo "</pre>";
 ?>
 </section>
 <?php include 'footer.inc.php'; ?>
