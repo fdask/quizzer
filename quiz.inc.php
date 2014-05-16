@@ -282,18 +282,31 @@ function saveCategories($question_id, $tag) {
 	}
 }	
 
-function getCategories($question_id) {
+function getCategories($question_id = false) {
 	$ret = array();
 
-	$query = "
-	SELECT
-		c.id,
-		c.category
-	FROM
-		categories c
-	INNER JOIN questioncategories qc ON (qc.category_id = c.id)
-	WHERE
-		qc.question_id = $question_id";
+	if (!$question_id) {
+		$query = "
+		SELECT 
+			COUNT(*) AS count, 
+			category_id, 
+			c.category 
+		FROM 
+			questioncategories 
+		INNER JOIN categories c ON (questioncategories.category_id = c.id) 
+		GROUP BY category_id
+		ORDER BY count DESC";
+	} else {
+		$query = "
+		SELECT
+			c.id,
+			c.category
+		FROM
+			categories c
+		INNER JOIN questioncategories qc ON (qc.category_id = c.id)
+		WHERE
+			qc.question_id = $question_id";
+	}
 
 	$res = mysql_query($query) or die($query . "<br/>" . mysql_error());
 
@@ -304,6 +317,34 @@ function getCategories($question_id) {
 	}
 
 	return $ret;
+}
+
+function isAnswerCorrect($question_id, $answer) {
+	$ret = false;
+
+	$query = "
+	SELECT
+		correct
+	FROM
+		answers
+	WHERE
+		question_id = $question_id";
+
+	if (ctype_alpha($answer)) {
+		$query .= " AND answer = '" . mysql_real_escape_string($answer) . "'";
+	} else {
+		$query .= " AND id = $answer";
+	}
+
+	$res = mysql_query($query);
+
+	if ($res && mysql_num_rows($res)) {
+		$row = mysql_fetch_assoc($res);
+
+		return $row['correct'] ? true : false;
+	}
+
+	return false;
 }
 
 mysql_connect("localhost", "quiz", "quiz");

@@ -15,5 +15,9 @@
    </head>
    <body>
 		<header>
-
+			<nav>
+			[ <a href='list.php'>List</a> ]
+			[ <a href='questions.php'>Add</a> ]
+			[ <a href='q.php'>Quiz</a> ]
+			</nav>
 		</header>

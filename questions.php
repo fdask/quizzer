@@ -22,6 +22,9 @@ if (isset($_POST['submit'])) {
 			}
 		}
 	} else {
+		echo "<pre>";
+		print_r($_POST);
+		echo "</pre>";
 		$question_id = saveQuestion($_POST['question'], $_POST['question_type'], $_POST['question_timelimit']);
 
 		if ($question_id) {
