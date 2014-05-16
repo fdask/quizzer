@@ -64,8 +64,8 @@ switch ($q['question_type']) {
 		$right = array();
 
 		foreach ($q['answers'] as $answer) {
-			$left[] = "<li data-txt='{$answer['answer']}'>{$answer['answer']}</li>";
-			$right[] = "<li data-txt='{$answer['explanation']}'>{$answer['explanation']}</li>";
+			$left[] = "<li data-txt='" . str_replace("'", "\'", $answer['answer']) . "'>" . htmlentities($answer['answer']) . "</li>";
+			$right[] = "<li data-txt='" . str_replace("'", "\'", $answer['explanation']) . "'>" . htmlentities($answer['explanation']) . "</li>";
 		}
 
 		shuffle($left);
@@ -120,7 +120,7 @@ function getAnswers() {
 				answers.push($(this).val());
 			}
 		});
-	} else if ($("#column-left")) {
+	} else if ($("#column-left").length) {
 		var left = $("#column-left").sortable('toArray', {attribute: 'data-txt'});
 		var right = $("#column-right").sortable('toArray', {attribute: 'data-txt'});
 
