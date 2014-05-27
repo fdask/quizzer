@@ -14,7 +14,6 @@ if (isset($_GET['did'])) {
 }
 
 include 'header.inc.php'; 
-
 ?>
 <script>
 $("button").click(function () {
@@ -32,7 +31,14 @@ table td {
 </style>
 <section>
 <?php
-$questions = getQuestions();
+if (isset($_GET['c'])) {
+	$category = getCategory($_GET['c']);
+	$questions = getQuestions($_GET['c']);
+
+	echo "<h2>#{$category['category']}</h2>";
+} else {
+	$questions = getQuestions();
+}
 
 if (!empty($questions)) {
 	echo "<table>";
