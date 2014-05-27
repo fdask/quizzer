@@ -21,7 +21,7 @@ foreach ($cats as $cat) {
 	echo "<td>{$cat['category']}</td>";
 	echo "<td>{$cat['count']}</td>";
 	echo "<td><a href='list.php?c={$cat['id']}'>List</a></td>";
-	echo "<td><a href='quiz.php?c={$cat['id']}'>Quiz</a></td>";
+	echo "<td><a href='q.php?c={$cat['id']}'>Quiz</a></td>";
 	echo "</tr>";
 }
 

@@ -2,7 +2,11 @@
 require 'header.inc.php';
 
 // get a random question
-$q = getQuestion(isset($_GET['qid']) ? $_GET['qid'] : false);
+if (isset($_GET['qid'])) {
+	$q = getQuestion($_GET['qid']);
+} else if ($_GET['c']) {
+	$q = getQuestionByCategory($_GET['c']);
+}
 
 echo "<p>";
 
@@ -157,7 +161,7 @@ function sendAnswer(answers) {
 			}
 
 			setTimeout(function() {
-				window.location.href = "q.php";
+				window.location.href = "q.php" + window.location.search;
 			}, 2000);
 		},
 		error: function(httpRequest, textStatus, errorThrown) { 

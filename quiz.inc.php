@@ -42,6 +42,41 @@ function saveAnswer($question_id, $answer, $explanation, $correct, $position = n
 	return mysql_query($query);
 }
 
+function getQuestionByCategory($categoryid) {
+	$query = "
+	SELECT
+		q.id,
+		q.question,
+		q.question_type,
+		q.time_limit
+	FROM
+		questions q
+	INNER JOIN questioncategories qc ON (qc.question_id = q.id)
+	WHERE
+		qc.category_id = $categoryid
+	ORDER BY RAND() LIMIT 1";
+
+	$res = mysql_query($query) or die($query . "<br/>" . mysql_error());
+
+	if (mysql_num_rows($res) === 1) {
+		// we've got the question
+		$row = mysql_fetch_assoc($res);
+
+		$question_id = $row['id'];
+
+		// now get the answers
+		$answers = array();
+		$answers['answers'] = getAnswers($question_id);
+
+		$categories = array();
+		$categories['categories'] = getCategories($question_id);
+
+		$ret = array_merge($row, $answers, $categories);
+	}
+
+	return $ret;
+}
+
 function getQuestion($question_id = false) {
 	$ret = array();
 
@@ -90,17 +125,21 @@ function getQuestion($question_id = false) {
 	return $ret;
 }
 
-function getQuestions() {
+function getQuestions($categoryid = false) {
 	$query = "
 	SELECT
-		id,
-		question,
-		question_type,
-		time_limit
+		q.id,
+		q.question,
+		q.question_type,
+		q.time_limit
 	FROM
-		questions";
+		questions q";
 
-	$res = mysql_query($query);
+	if ($categoryid && ctype_digit($categoryid)) {
+		$query .= " INNER JOIN questioncategories qc ON (q.id = qc.question_id) WHERE qc.category_id = $categoryid";
+	}
+
+	$res = mysql_query($query) or die(mysql_error());
 
 	if ($res) {
 		$ret = array();
@@ -282,6 +321,27 @@ function saveCategories($question_id, $tag) {
 	}
 }	
 
+function getCategory($categoryid) {
+	$query = "
+	SELECT
+		id,
+		category	
+	FROM
+		categories
+	WHERE
+		id = $categoryid";
+
+	$res = mysql_query($query);
+
+	if (mysql_num_rows($res)) {
+		$row = mysql_fetch_assoc($res);
+
+		return $row;
+	}
+
+	return false;
+}
+
 function getCategories($question_id = false) {
 	$ret = array();
 
@@ -289,7 +349,7 @@ function getCategories($question_id = false) {
 		$query = "
 		SELECT 
 			COUNT(*) AS count, 
-			category_id, 
+			category_id AS id, 
 			c.category 
 		FROM 
 			questioncategories 
