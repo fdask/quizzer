@@ -20,6 +20,7 @@
 			<nav>
 			[ <a href='list.php'>List</a> ]
 			[ <a href='questions.php'>Add</a> ]
+			[ <a href='cats.php'>Categories</a> ]
 			[ <a href='q.php'>Quiz</a> ]
 			</nav>
 		</header>
