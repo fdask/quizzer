@@ -4,8 +4,10 @@ require 'header.inc.php';
 // get a random question
 if (isset($_GET['qid'])) {
 	$q = getQuestion($_GET['qid']);
-} else if ($_GET['c']) {
+} else if (isset($_GET['c'])) {
 	$q = getQuestionByCategory($_GET['c']);
+} else {
+	$q = getQuestion();	
 }
 
 echo "<p>";

@@ -130,7 +130,8 @@ if (isset($_POST['submit'])) {
 						<input type='text' name='answer[]' value="<?php echo $answer['answer']; ?>" /><br/>
 
 						<label for='answer_correct'>Correct Answer?</label>
-						<input type='checkbox' name='answer_correct[]' <?php if ($answer['correct']) echo "checked='checked'"; ?> /> Correct<br/>
+						<input type='checkbox' name='answer_correct[]' <?php if ($answer['correct']) echo "checked='checked'"; ?> /> 
+						<label for='answer_correct'>Correct</label><br/>
 				
 						<label for='answer_explanation'>Explanation</label>
 						<input type='text' name='answer_explanation[]' value='<?php echo str_replace('"', '\"', $answer['explanation']); ?>' /><br/>

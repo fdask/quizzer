@@ -29,6 +29,7 @@ if (isset($data['qid']) && !empty($data['answers'])) {
 	}
 
 	// save the answer
+	addResult($data['qid'], ($all_good ? 1 : 0));
 }
 
 exit;

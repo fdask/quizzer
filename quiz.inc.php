@@ -423,5 +423,20 @@ function doColumnsMatch($question_id, $answer, $explanation) {
 	return mysql_num_rows($res);
 }
 
+function addResult($question_id, $correct) {
+	$query = "
+	INSERT INTO results (
+		question_id,
+		correct,
+		date
+	) VALUES (
+		$question_id,
+		$correct,
+		NOW()
+	)";
+
+	return mysql_query($query);
+}
+
 mysql_connect("localhost", "quiz", "quiz");
 mysql_select_db("quiz");
